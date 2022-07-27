@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { motion, useMotionValue, useTransform, useScroll } from "framer-motion";
-import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 const Wrapper = styled(motion.div)`
-  height: 200vh;
+  height: 100vh;
   width: 100vw;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
@@ -13,27 +14,35 @@ const Wrapper = styled(motion.div)`
 const Box = styled(motion.div)`
   width: 200px;
   height: 200px;
-  background-color: rgba(255, 255, 255, 1);
-  border-radius: 15px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+  position: absolute;
+  top: 10px;
+  background-color: pink;
 `;
 
+const boxVariants = {
+  start: { opacity: 0, scale: 0 },
+  visible: { opacity: 1, scale: 1, y: -20 },
+  exit: { opacity: 0, scale: 0, y: 20 },
+};
+
 function App() {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-500, 500], [-360, 360]);
-  const { scrollYProgress } = useScroll();
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 5]);
-  const bgGradient = useTransform(
-    x,
-    [-500, 500],
-    [
-      "linear-gradient(135deg, rgb(155, 89, 182), rgb(142, 68, 173))",
-      "linear-gradient(135deg, rgb(230, 126, 34), rgb(241, 196, 15))",
-    ]
-  );
+  const [showing, setShowing] = useState(false);
+  const onClick = () => {
+    setShowing((prev) => !prev);
+  };
   return (
-    <Wrapper style={{ background: bgGradient }}>
-      <Box style={{ x, rotateZ: rotate, scale }} drag="x" dragSnapToOrigin />
+    <Wrapper>
+      <AnimatePresence>
+        {showing ? (
+          <Box
+            variants={boxVariants}
+            initial="start"
+            animate="visible"
+            exit="exit"
+          />
+        ) : null}
+      </AnimatePresence>
+      <button onClick={onClick}>button</button>
     </Wrapper>
   );
 }
