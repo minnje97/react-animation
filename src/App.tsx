@@ -12,55 +12,57 @@ const Wrapper = styled(motion.div)`
 `;
 
 const Box = styled(motion.div)`
-  width: 200px;
   height: 200px;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 30px;
+`;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 50vw;
+  gap: 10px;
+  div:first-child,
+  div:last-child {
+    grid-column: span 2;
+  }
+`;
+
+const Overlay = styled(motion.div)`
+  width: 100%;
+  height: 100%;
   position: absolute;
-  top: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
+  div {
+    width: 500px;
+    height: 200px;
+  }
 `;
 
-const boxVariants = {
-  entry: (back: boolean) => ({ opacity: 0, scale: 0, x: back ? -500 : 500 }),
-  center: {
-    opacity: 1,
-    scale: 1,
-    x: 0,
-    transition: { duration: 0.4 },
-  },
-  exit: (back: boolean) => ({ opacity: 0, scale: 0, x: back ? 500 : -500 }),
-};
-
 function App() {
-  const [visible, setVisible] = useState(1);
-  const [back, setBack] = useState(false);
-  const nextPlease = () => {
-    setBack(false);
-    setVisible((prev) => (prev === 10 ? 10 : prev + 1));
-  };
-  const prevPlease = () => {
-    setBack(true);
-    setVisible((prev) => (prev === 1 ? 1 : prev - 1));
-  };
+  const [boxId, setBoxId] = useState<string | null>(null);
+  console.log(boxId);
   return (
     <Wrapper>
-      <AnimatePresence exitBeforeEnter custom={back}>
-        <Box
-          custom={back}
-          key={visible}
-          variants={boxVariants}
-          initial="entry"
-          animate="center"
-          exit="exit"
-        >
-          {visible}
-        </Box>
+      <Grid>
+        {["1", "2", "3", "4"].map((n) => (
+          <Box key={n} layoutId={n} onClick={() => setBoxId(n)} />
+        ))}
+      </Grid>
+      <AnimatePresence>
+        {boxId ? (
+          <Overlay
+            onClick={() => setBoxId(null)}
+            initial={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+            animate={{ backgroundColor: "rgba(0, 0, 0, 0.4)" }}
+            exit={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+          >
+            <Box layoutId={boxId} />
+          </Overlay>
+        ) : null}
       </AnimatePresence>
-      <button onClick={nextPlease}>next</button>
-      <button onClick={prevPlease}>prev</button>
     </Wrapper>
   );
 }
