@@ -9,12 +9,22 @@ const Wrapper = styled(motion.div)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: #009432;
 `;
 
 const Box = styled(motion.div)`
   height: 200px;
   background-color: rgba(186, 220, 88, 1);
   border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &:first-child {
+    transform-origin: right bottom;
+  }
+  &:last-child {
+    transform-origin: left top;
+  }
 `;
 
 const Grid = styled.div`
@@ -37,41 +47,53 @@ const Overlay = styled(motion.div)`
   }
 `;
 
-const Switch = styled(motion.button)``;
+const Switch = styled(motion.button)`
+  border: none;
+  margin-top: 20px;
+  padding: 8px;
+  border-radius: 3px;
+  background-color: white;
+`;
 
 const BoxVariants = {
   start: { scale: 1 },
-  hover: { scale: 1.2 },
+  hover: { scale: 1.1, transition: { type: "tween", delay: 0.2 } },
 };
 
 const Circle = styled(motion.div)`
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  align-self: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: white;
 `;
 
 function App() {
   const [boxId, setBoxId] = useState<string | null>(null);
-  /*  const [switch, setSwitch]=useState<boolean>(false);
-  const onClick = () => setSwitch((prev) => !prev); */
+  const [move, setMove] = useState<boolean>(false);
+  const onClick = () => setMove((prev) => !prev);
   return (
     <Wrapper>
       <Grid>
-        {["1", "2", "3", "4"].map((n) => (
-          <Box
-            key={n}
-            layoutId={n}
-            onClick={() => setBoxId(n)}
-            variants={BoxVariants}
-            initial="start"
-            whileHover="hover"
-          >
-            <Circle layoutId="circle"></Circle>
-          </Box>
-        ))}
+        <Box
+          layoutId={"1"}
+          onClick={() => setBoxId("1")}
+          variants={BoxVariants}
+          initial="start"
+          whileHover={"hover"}
+        />
+        <Box>{!move ? <Circle layoutId="circle" /> : null}</Box>
+        <Box>{move ? <Circle layoutId="circle" /> : null}</Box>
+        <Box
+          layoutId={"4"}
+          onClick={() => setBoxId("4")}
+          variants={BoxVariants}
+          initial="start"
+          whileHover={"hover"}
+        />
       </Grid>
-      {/* <Switch onClick={onClick}>Switch</Switch> */}
+      <Switch whileTap={{ scale: 1.1, color: "red" }} onClick={onClick}>
+        Switch
+      </Switch>
       <AnimatePresence>
         {boxId ? (
           <Overlay
