@@ -13,19 +13,15 @@ const Wrapper = styled(motion.div)`
 
 const Box = styled(motion.div)`
   height: 200px;
-  background-color: rgba(255, 255, 255, 1);
+  background-color: rgba(186, 220, 88, 1);
   border-radius: 30px;
 `;
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   width: 50vw;
   gap: 10px;
-  div:first-child,
-  div:last-child {
-    grid-column: span 2;
-  }
 `;
 
 const Overlay = styled(motion.div)`
@@ -41,16 +37,41 @@ const Overlay = styled(motion.div)`
   }
 `;
 
+const Switch = styled(motion.button)``;
+
+const BoxVariants = {
+  start: { scale: 1 },
+  hover: { scale: 1.2 },
+};
+
+const Circle = styled(motion.div)`
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  align-self: center;
+`;
+
 function App() {
   const [boxId, setBoxId] = useState<string | null>(null);
-  console.log(boxId);
+  /*  const [switch, setSwitch]=useState<boolean>(false);
+  const onClick = () => setSwitch((prev) => !prev); */
   return (
     <Wrapper>
       <Grid>
         {["1", "2", "3", "4"].map((n) => (
-          <Box key={n} layoutId={n} onClick={() => setBoxId(n)} />
+          <Box
+            key={n}
+            layoutId={n}
+            onClick={() => setBoxId(n)}
+            variants={BoxVariants}
+            initial="start"
+            whileHover="hover"
+          >
+            <Circle layoutId="circle"></Circle>
+          </Box>
         ))}
       </Grid>
+      {/* <Switch onClick={onClick}>Switch</Switch> */}
       <AnimatePresence>
         {boxId ? (
           <Overlay
